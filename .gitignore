@@ -1,0 +1,20 @@
+# Ambientes e caches Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Artefatos gerados pelo pipeline
+checkpoints/
+results/
+figures/
+logs/
+data/midi/
+data/tokens/
+samples/*/eval/
+samples/*/eval_ids.json
+samples/showcase.csv
+
+# Arquivos locais do sistema e editor
+.DS_Store
+.idea/
+.vscode/
