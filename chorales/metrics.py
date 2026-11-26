@@ -1,4 +1,3 @@
-"""Métricas objetivas (muspy) e comparação de distribuições (Yang & Lerch, 2020)."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -46,7 +45,7 @@ def _pairwise(a: np.ndarray, b: np.ndarray | None = None) -> np.ndarray:
 
 def _kde(x: np.ndarray):
     x = x[np.isfinite(x)]
-    if np.ptp(x) < 1e-9:                       # distribuição degenerada
+    if np.ptp(x) < 1e-9:
         x = x + np.random.default_rng(0).normal(0, 1e-3, len(x))
     return gaussian_kde(x)
 
@@ -68,13 +67,6 @@ def overlap_and_kl(p_samples: np.ndarray, q_samples: np.ndarray, n_grid: int = 2
 
 
 def compare_to_reference(gen: np.ndarray, ref: np.ndarray) -> dict[str, float]:
-    """Protocolo de Yang & Lerch (2020) para uma métrica escalar.
-
-    Compara a distribuição de distâncias intra-referência (humano–humano) com a
-    de distâncias inter-conjuntos (gerado–humano): OA alto e KL baixo indicam
-    que as peças geradas são tão "próximas" do conjunto de teste quanto as
-    próprias peças humanas entre si.
-    """
     gen, ref = np.asarray(gen, float), np.asarray(ref, float)
     intra_ref, inter = _pairwise(ref), _pairwise(gen, ref)
     oa, kl = overlap_and_kl(intra_ref, inter)
