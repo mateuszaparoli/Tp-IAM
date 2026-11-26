@@ -1,4 +1,3 @@
-"""JSB Chorales: leitura da partição oficial e conversão para MIDI."""
 from __future__ import annotations
 
 import json
@@ -20,28 +19,16 @@ TEMPO_BPM = 80
 
 
 def load_split(split: str) -> list[np.ndarray]:
-    """Lista de arrays (T, 4) com as alturas SATB por semicolcheia."""
     data = json.loads(RAW_JSON.read_text())
     return [np.asarray(piece, dtype=np.int16) for piece in data[split]]
 
 
 def pickup_steps(grid: np.ndarray) -> int:
-    """Passos de silêncio a prefixar para alinhar as barras de compasso.
-
-    O JSON não traz a fórmula de compasso nem a anacruse. Como quase todo coral
-    termina em compasso completo, a anacruse é o resto ``T mod 16``; prefixar
-    ``16 - resto`` passos faz o primeiro tempo forte cair no início de um compasso.
-    """
     rem = len(grid) % STEPS_PER_BAR
     return (STEPS_PER_BAR - rem) % STEPS_PER_BAR
 
 
 def grid_to_notes(grid: np.ndarray, offset_steps: int = 0) -> list[tuple[int, int, int]]:
-    """Converte a grade em notas (início, duração, altura), em passos.
-
-    Passos consecutivos com a mesma altura numa voz viram uma nota sustentada
-    (o formato não distingue nota repetida de nota ligada).
-    """
     notes = []
     T = len(grid)
     for v in range(grid.shape[1]):
@@ -60,7 +47,6 @@ def grid_to_notes(grid: np.ndarray, offset_steps: int = 0) -> list[tuple[int, in
 
 
 def notes_to_score(notes, program: int = 0) -> Score:
-    """Notas (início, duração, altura) em semicolcheias -> ``symusic.Score`` de uma faixa."""
     score = Score(TPQ)
     track = Track(program=program, is_drum=False, name="SATB")
     for start, dur, pitch in notes:
