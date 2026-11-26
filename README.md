@@ -47,11 +47,9 @@ python scripts/analyze_tonality.py
 
 A execução recria dados processados, pesos, resultados, figuras e amostras, sobrescrevendo as saídas anteriores. Os pesos treinados não estão no GitHub: é necessário treinar antes de gerar novas músicas. Os exemplos já incluídos podem ser ouvidos sem executar o código.
 
-O dataset bruto está em `data/raw/Jsb16thSeparated.json`, obtido de [JSB-Chorales-dataset](https://github.com/czhuang/JSB-Chorales-dataset). A preparação converte a grade em semicolcheias para MIDI, assume compasso 4/4 e aplica transposições somente ao treino.
+O dataset bruto está em `data/raw/Jsb16thSeparated.json`, obtido de [JSB-Chorales-dataset](https://github.com/czhuang/JSB-Chorales-dataset).
 
 ## Contribuições registradas no repositório
-
-A tabela descreve as partes incorporadas por cada integrante no histórico de commits.
 
 | Integrante | Participação registrada |
 | --- | --- |
