@@ -1,4 +1,3 @@
-"""Representação REMI (miditok) para os corais."""
 from __future__ import annotations
 
 
@@ -7,18 +6,18 @@ from miditok import REMI, TokenizerConfig, TokSequence
 from .data import ROOT
 
 TOKENIZER_PATH = ROOT / "data" / "tokenizer.json"
-PITCH_RANGE = (33, 86)          # Lá1..Ré6 (inclusivo), folga para a transposição (dados: 36..81)
+PITCH_RANGE = (33, 86)
 
 
 def build_tokenizer() -> REMI:
     cfg = TokenizerConfig(
         pitch_range=PITCH_RANGE,
-        beat_res={(0, 4): 4, (4, 12): 2},     # semicolcheia até 1 compasso, colcheia além
+        beat_res={(0, 4): 4, (4, 12): 2},
         num_velocities=1,
         use_velocities=False,
         use_chords=False, use_rests=False, use_tempos=False,
         use_time_signatures=False, use_programs=False,
-        use_pitchdrum_tokens=False,           # sem bateria: evita 62 tokens inúteis
+        use_pitchdrum_tokens=False,
         special_tokens=["PAD", "BOS", "EOS"],
     )
     return REMI(cfg)
@@ -35,7 +34,6 @@ def special_ids(tok: REMI) -> dict[str, int]:
 
 
 def encode_score(tok: REMI, score) -> list[int]:
-    """Score -> ids, com BOS/EOS nas pontas."""
     res = tok.encode(score)
     seq = res[0] if isinstance(res, list) else res
     sp = special_ids(tok)
