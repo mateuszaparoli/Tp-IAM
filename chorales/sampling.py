@@ -8,7 +8,6 @@ import torch.nn.functional as F
 
 def filter_probs(probs: np.ndarray, temperature: float = 1.0, top_k: int = 0,
                  top_p: float = 1.0) -> np.ndarray:
-    """Reaplica temperatura e corta a cauda de uma distribuição (numpy, 1-D)."""
     p = np.asarray(probs, dtype=np.float64)
     if temperature != 1.0:
         p = np.power(np.maximum(p, 1e-300), 1.0 / temperature)
@@ -28,7 +27,6 @@ def filter_probs(probs: np.ndarray, temperature: float = 1.0, top_k: int = 0,
 
 def filter_logits(logits: torch.Tensor, temperature: float = 1.0, top_k: int = 0,
                   top_p: float = 1.0) -> torch.Tensor:
-    """Versão em lote (B, V) para o Transformer; devolve probabilidades."""
     logits = logits.float() / max(temperature, 1e-6)
     if top_k and top_k < logits.size(-1):
         kth = torch.topk(logits, top_k, dim=-1).values[..., -1:]
@@ -37,7 +35,7 @@ def filter_logits(logits: torch.Tensor, temperature: float = 1.0, top_k: int = 0
     if top_p < 1.0:
         sp, idx = torch.sort(probs, descending=True, dim=-1)
         csum = torch.cumsum(sp, dim=-1)
-        drop = (csum - sp) > top_p          # mantém o menor prefixo com massa >= top_p
+        drop = (csum - sp) > top_p
         sp = sp.masked_fill(drop, 0.0)
         probs = torch.zeros_like(probs).scatter(-1, idx, sp)
         probs = probs / probs.sum(-1, keepdim=True)
