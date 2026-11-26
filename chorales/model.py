@@ -1,4 +1,3 @@
-"""Transformer decoder-only (autoregressivo) em PyTorch puro."""
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
@@ -21,12 +20,6 @@ class ModelConfig:
 
 
 class MusicTransformer(nn.Module):
-    """Pilha de ``nn.TransformerEncoderLayer`` com máscara causal (estilo GPT).
-
-    Embedding de tokens + embedding posicional aprendido, pré-normalização,
-    e projeção de saída com pesos amarrados ao embedding de entrada.
-    """
-
     def __init__(self, cfg: ModelConfig):
         super().__init__()
         self.cfg = cfg
@@ -73,10 +66,6 @@ class MusicTransformer(nn.Module):
 
 @torch.no_grad()
 def sequence_nll(model: MusicTransformer, seq: list[int], device, stride: int | None = None):
-    """Soma da log-verossimilhança negativa (nats) e nº de tokens previstos.
-
-    Sequências maiores que o contexto são avaliadas com janela deslizante.
-    """
     L = model.cfg.max_len
     stride = stride or L // 2
     ids = torch.tensor(seq, device=device)
