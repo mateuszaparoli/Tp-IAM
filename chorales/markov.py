@@ -1,4 +1,3 @@
-"""Baseline: cadeia de Markov de ordem n sobre os mesmos tokens REMI."""
 from __future__ import annotations
 
 import numpy as np
@@ -8,7 +7,6 @@ _P2 = np.uint64(0x9E3779B97F4A7C15)
 
 
 def _ctx_hash(arr: np.ndarray, pos: np.ndarray, k: int) -> np.ndarray:
-    """Hash dos k tokens que antecedem cada posição ``pos`` em ``arr``."""
     h = np.zeros(len(pos), dtype=np.uint64)
     with np.errstate(over="ignore"):
         for j in range(k, 0, -1):
@@ -26,7 +24,6 @@ class _Table:
         pair = _pair_hash(ctx, w)
         self.pair_keys, self.pair_c = np.unique(pair, return_counts=True)
         self.ctx_keys, self.ctx_c = np.unique(ctx, return_counts=True)
-        # nº de tipos por contexto = nº de pares distintos com aquele contexto
         uniq_pairs = np.unique(np.stack([ctx, w.astype(np.uint64)]), axis=1)
         _, self.ctx_T = np.unique(uniq_pairs[0], return_counts=True)
 
@@ -95,7 +92,7 @@ class NGramLM:
             ctx = _ctx_hash(arr, np.array([len(arr)]), k)
             c_h, T_h = self.tables[k - 1].ctx_stats(ctx)
             if c_h[0] == 0:
-                break                       # contextos mais longos também não existem
+                break
             c_hw = self.tables[k - 1].pair_count(np.repeat(ctx, self.V), all_w)
             p = (c_hw + T_h[0] * p) / (c_h[0] + T_h[0])
         return p
